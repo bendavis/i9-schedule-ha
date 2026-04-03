@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bendavis/i9-schedule-ha/.github/schemas/hacs.schema.json",
+  "title": "HACS Manifest Schema",
+  "type": "object",
+  "required": ["name"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "content_in_root": {
+      "type": "boolean"
+    },
+    "country": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        }
+      ]
+    },
+    "filename": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hacs": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "hide_default_branch": {
+      "type": "boolean"
+    },
+    "homeassistant": {
+      "type": ["string", "null"],
+      "minLength": 1
+    },
+    "persistent_directory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "render_readme": {
+      "type": "boolean"
+    },
+    "zip_release": {
+      "type": "boolean"
+    },
+    "documentation": {
+      "type": "string",
+      "format": "uri"
+    },
+    "issue_tracker": {
+      "type": "string",
+      "format": "uri"
+    }
+  }
+}
