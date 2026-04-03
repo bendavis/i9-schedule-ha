@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i9 Schedule Card - Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .title {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .card-demo {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #3b82f6, rgba(255, 255, 255, 0.05));
+            padding: 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-header h2 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+            color: #fff;
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .label {
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .value {
+            color: #fff;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .value.highlight {
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .jersey-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background-color: #3b82f6;
+            color: #fff;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            margin: 4px 0;
+        }
+
+        .countdown {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        .countdown-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .card-button {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .info {
+            color: #a0aec0;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .info code {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #4ade80;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">⚽ i9 Schedule Card</div>
+
+        <div class="card-demo">
+            <div class="card-header">
+                <h2>⚽ NEXT GAME</h2>
+            </div>
+
+            <div class="card-body">
+                <div class="game-info">
+                    <div class="info-row">
+                        <span class="label">📅 Date</span>
+                        <span class="value">Saturday, April 12, 2026</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">🏈 Team</span>
+                        <span class="value">CP Volleyball - TM 01</span>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="info-row">
+                        <span class="label">⏰ Game Time</span>
+                        <span class="value highlight">1:00 PM</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">🎯 Arrive by</span>
+                        <span class="value">12:30 PM</span>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="info-row">
+                        <span class="label">📍 Location</span>
+                        <span class="value">Stiles Middle School</span>
+                    </div>
+
+                    <div class="info-row" style="margin-left: 24px; font-size: 13px; opacity: 0.8;">
+                        <span class="label">Field</span>
+                        <span class="value">Court 2</span>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="info-row">
+                        <span class="label">👕 Jersey</span>
+                        <span class="jersey-badge">ORANGE</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">🏠 Game Type</span>
+                        <span class="value">Away vs. TM 04</span>
+                    </div>
+
+                    <div class="section-divider"></div>
+
+                    <div class="countdown">
+                        <div class="countdown-value">⏱ 2 days, 5 hours away</div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="card-button">🔄 Refresh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info">
+            <p>This is a preview of the i9 Schedule card.</p>
+            <p>In Home Assistant, this card displays your child's next game with live data from the i9 Schedule integration.</p>
+            <p><strong>To install:</strong> See <code>README.md</code> in the <code>custom_card</code> folder.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 1,
+  "name": "i9 Schedule Card",
+  "description": "Display i9 Sports game schedules for your children",
+  "codeowners": ["@bendavis"],
+  "requirements": [],
+  "version": "1.0.0",
+  "documentation": "https://github.com/bendavis/i9-schedule-ha/blob/main/custom_card/README.md",
+  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues",
+  "resources": {
+    "js": [
+      "i9-schedule-card.js"
+    ]
+  },
+  "homeassistant": "2023.1.0"
+}
