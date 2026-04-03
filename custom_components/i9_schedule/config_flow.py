@@ -147,19 +147,19 @@ class I9ScheduleOptionsFlow(config_entries.OptionsFlow):
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
 
     async def async_step_init(self, user_input: Optional[Dict[str, Any]] = None) -> FlowResult:
         """Handle options step."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        scan_interval = self.config_entry.options.get(
+        scan_interval = self._config_entry.options.get(
             CONF_SCAN_INTERVAL,
             int(DEFAULT_SCAN_INTERVAL.total_seconds()),
         )
-        pre_event_update = self.config_entry.options.get(CONF_PRE_EVENT_UPDATE, DEFAULT_PRE_EVENT_UPDATE)
-        pre_event_minutes = self.config_entry.options.get(CONF_PRE_EVENT_MINUTES, DEFAULT_PRE_EVENT_MINUTES)
+        pre_event_update = self._config_entry.options.get(CONF_PRE_EVENT_UPDATE, DEFAULT_PRE_EVENT_UPDATE)
+        pre_event_minutes = self._config_entry.options.get(CONF_PRE_EVENT_MINUTES, DEFAULT_PRE_EVENT_MINUTES)
 
         options_schema = vol.Schema(
             {

@@ -44,4 +44,4 @@ ATTR_MINUTES_UNTIL = "minutes_until"
 ATTR_GAME_DATE = "game_date"
 
 # Sensor platforms
-PLATFORMS = ["sensor", "binary_sensor"]
+PLATFORMS = ["sensor"]
