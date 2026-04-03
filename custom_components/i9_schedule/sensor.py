@@ -27,6 +27,9 @@ async def async_setup_entry(
     """Set up sensors from config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     
+    # Track which child/team combinations we've already created entities for
+    created_entities = set()
+    
     async def async_discover_entities():
         """Discover and add entities for all children."""
         entities = []
@@ -39,39 +42,46 @@ async def async_setup_entry(
                     team_id = team_data["team_id"]
                     team_name = team_data["team_name"]
                     
-                    # Add sensor entities
-                    entities.extend([
-                        I9NextGameTimeSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameLocationSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameOpponentSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameJerseyColorSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameArrivalTimeSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameHomeAwaySensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9MinutesUntilGameSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9NextGameTeamNameSensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9GameTodayBinarySensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                        I9GameThisWeekBinarySensor(
-                            coordinator, child_id, team_id, child_name, team_name
-                        ),
-                    ])
+                    # Create unique key for this child/team combo
+                    entity_key = (child_id, team_id)
+                    
+                    # Only create entities if this is a new child/team combo
+                    if entity_key not in created_entities:
+                        created_entities.add(entity_key)
+                        
+                        # Add sensor entities
+                        entities.extend([
+                            I9NextGameTimeSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameLocationSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameOpponentSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameJerseyColorSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameArrivalTimeSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameHomeAwaySensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9MinutesUntilGameSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9NextGameTeamNameSensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9GameTodayBinarySensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                            I9GameThisWeekBinarySensor(
+                                coordinator, child_id, team_id, child_name, team_name
+                            ),
+                        ])
         
         if entities:
             async_add_entities(entities)

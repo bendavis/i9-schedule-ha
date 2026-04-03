@@ -31,6 +31,7 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize coordinator."""
         self.config_entry = config_entry
         self.api: I9API | None = None
+        self._last_known_children: set[str] = set()
         
         scan_interval = config_entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
@@ -100,21 +101,20 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
 
     def _check_for_new_children(self, new_data: dict) -> None:
         """Check if new children were discovered and trigger entity addition."""
-        old_data = getattr(self, "_last_known_children", {})
         new_child_ids = set(new_data.keys())
-        old_child_ids = set(old_data.keys())
-        
-        # Store current state
-        self._last_known_children = new_data
         
         # If new children found, signal to coordinator listeners
-        if new_child_ids != old_child_ids:
-            new_children = new_child_ids - old_child_ids
+        if new_child_ids != self._last_known_children:
+            new_children = new_child_ids - self._last_known_children
             if new_children:
+                new_child_names = [new_data[cid]["child_name"] for cid in new_children]
                 _LOGGER.info(
-                    "New children discovered: %s. Entities will be created on next update.",
-                    [new_data[cid]["child_name"] for cid in new_children],
+                    "New children discovered: %s. Entities will be created automatically.",
+                    new_child_names,
                 )
+            
+            # Update tracking
+            self._last_known_children = new_child_ids
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
