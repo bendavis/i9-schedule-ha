@@ -10,7 +10,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import DOMAIN, CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+from .const import (
+    DOMAIN,
+    CONF_SCAN_INTERVAL,
+    CONF_PRE_EVENT_UPDATE,
+    CONF_PRE_EVENT_MINUTES,
+    DEFAULT_SCAN_INTERVAL,
+    DEFAULT_PRE_EVENT_UPDATE,
+    DEFAULT_PRE_EVENT_MINUTES,
+)
 from .i9_client import I9API, InvalidAuth
 
 _LOGGER = logging.getLogger(__name__)
@@ -108,7 +116,11 @@ class I9ScheduleConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     return self.async_create_entry(
                         title=user_input[CONF_USERNAME],
                         data=user_input,
-                        options={CONF_SCAN_INTERVAL: int(DEFAULT_SCAN_INTERVAL.total_seconds())},
+                        options={
+                            CONF_SCAN_INTERVAL: int(DEFAULT_SCAN_INTERVAL.total_seconds()),
+                            CONF_PRE_EVENT_UPDATE: DEFAULT_PRE_EVENT_UPDATE,
+                            CONF_PRE_EVENT_MINUTES: DEFAULT_PRE_EVENT_MINUTES,
+                        },
                     )
 
             except InvalidAuth:
@@ -213,6 +225,12 @@ class I9ScheduleOptionsFlow(config_entries.OptionsFlow):
             CONF_SCAN_INTERVAL,
             int(DEFAULT_SCAN_INTERVAL.total_seconds()),
         )
+        pre_event_update = self.config_entry.options.get(
+            CONF_PRE_EVENT_UPDATE, DEFAULT_PRE_EVENT_UPDATE
+        )
+        pre_event_minutes = self.config_entry.options.get(
+            CONF_PRE_EVENT_MINUTES, DEFAULT_PRE_EVENT_MINUTES
+        )
 
         options_schema = vol.Schema(
             {
@@ -222,6 +240,17 @@ class I9ScheduleOptionsFlow(config_entries.OptionsFlow):
                 ): vol.All(
                     vol.Coerce(int),
                     vol.Range(min=300, max=86400),
+                ),
+                vol.Required(
+                    CONF_PRE_EVENT_UPDATE,
+                    default=pre_event_update,
+                ): bool,
+                vol.Required(
+                    CONF_PRE_EVENT_MINUTES,
+                    default=pre_event_minutes,
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(min=5, max=1440),
                 ),
             }
         )

@@ -16,6 +16,8 @@ from .const import (
     CONF_USERNAME,
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
+    CONF_PRE_EVENT_UPDATE,
+    CONF_PRE_EVENT_MINUTES,
     DEFAULT_SCAN_INTERVAL,
     PLATFORMS,
 )
@@ -32,6 +34,7 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
         self.config_entry = config_entry
         self.api: I9API | None = None
         self._last_known_children: set[str] = set()
+        self._next_pre_event_update: float | None = None
         
         scan_interval = config_entry.options.get(
             CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
@@ -90,6 +93,9 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
             # Detect new children and trigger entity discovery
             self._check_for_new_children(data)
             
+            # Update next pre-event check time
+            self._schedule_pre_event_update(data)
+            
             return data
 
         except InvalidAuth as err:
@@ -98,6 +104,43 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(f"Network error connecting to i9 API: {err}") from err
         except Exception as err:
             raise UpdateFailed(f"Error fetching i9 schedule data: {err}") from err
+
+    def _schedule_pre_event_update(self, data: dict) -> None:
+        """Schedule a pre-event update if enabled."""
+        from datetime import datetime
+        
+        pre_event_enabled = self.config_entry.options.get(
+            CONF_PRE_EVENT_UPDATE, True
+        )
+        if not pre_event_enabled:
+            return
+        
+        pre_event_minutes = self.config_entry.options.get(
+            CONF_PRE_EVENT_MINUTES, 120
+        )
+        
+        # Find the next game across all children
+        next_game_time = None
+        for child_data in data.values():
+            for team_data in child_data.get("teams", []):
+                next_game = team_data.get("next_game")
+                if next_game:
+                    game_dt = I9API._parse_datetime(next_game.get("startTime"))
+                    if game_dt:
+                        if next_game_time is None or game_dt < next_game_time:
+                            next_game_time = game_dt
+        
+        if next_game_time:
+            # Calculate pre-event update time
+            pre_event_time = next_game_time - timedelta(minutes=pre_event_minutes)
+            now = datetime.now()
+            
+            if pre_event_time > now:
+                self._next_pre_event_update = pre_event_time.timestamp()
+                time_until = int((pre_event_time - now).total_seconds() / 60)
+                _LOGGER.debug(
+                    "Next pre-event update scheduled in %d minutes", time_until
+                )
 
     def _check_for_new_children(self, new_data: dict) -> None:
         """Check if new children were discovered and trigger entity addition."""

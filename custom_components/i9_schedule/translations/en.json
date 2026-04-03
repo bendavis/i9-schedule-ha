@@ -41,12 +41,16 @@
     "step": {
       "init": {
         "title": "i9 Schedule Options",
-        "description": "Configure update frequency",
+        "description": "Configure update frequency and pre-event polling",
         "data": {
-          "scan_interval": "Update interval (seconds, 300-86400)"
+          "scan_interval": "Regular polling interval (seconds)",
+          "pre_event_update": "Poll before sporting events",
+          "pre_event_minutes": "Minutes before game to poll"
         },
         "data_description": {
-          "scan_interval": "How often to check i9 Sports for schedule updates. Minimum 5 minutes (300 seconds), maximum 24 hours (86400 seconds). Default is 30 minutes (1800 seconds)."
+          "scan_interval": "How often to check i9 Sports for schedule updates. Default is 48 hours (172800 seconds). Minimum 5 minutes (300 seconds), maximum 24 hours (86400 seconds).",
+          "pre_event_update": "Enable automatic polling shortly before upcoming games to catch last-minute schedule changes",
+          "pre_event_minutes": "How many minutes before a game to perform an update check. Default is 120 minutes (2 hours). Range: 5-1440 minutes (24 hours)."
         }
       }
     }

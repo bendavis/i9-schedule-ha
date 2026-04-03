@@ -7,10 +7,18 @@ DOMAIN = "i9_schedule"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 CONF_SCAN_INTERVAL = "scan_interval"
+CONF_PRE_EVENT_UPDATE = "pre_event_update"
+CONF_PRE_EVENT_MINUTES = "pre_event_minutes"
 
-DEFAULT_SCAN_INTERVAL = timedelta(minutes=30)
+DEFAULT_SCAN_INTERVAL = timedelta(hours=48)
 MIN_SCAN_INTERVAL = timedelta(seconds=300)
 MAX_SCAN_INTERVAL = timedelta(hours=24)
+
+DEFAULT_PRE_EVENT_UPDATE = True
+DEFAULT_PRE_EVENT_MINUTES = 120  # 2 hours before game
+
+MIN_PRE_EVENT_MINUTES = 5
+MAX_PRE_EVENT_MINUTES = 1440  # 24 hours
 
 # API
 I9_BASE_URL = "https://be.i9sports.com"
