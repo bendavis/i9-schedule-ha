@@ -1,10 +1,7 @@
 {
   "name": "i9 Schedule",
-  "homeassistant": "2023.1.0",
-  "iot_class": "cloud_polling",
   "documentation": "https://github.com/bendavis/i9-schedule-ha",
   "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues",
-  "requirements": [],
   "hacs": {
     "category": "integration",
     "topics": ["i9-sports", "schedule", "automation", "sports"]
