@@ -12,6 +12,18 @@
           "username": "Your i9 Sports account email",
           "password": "Your i9 Sports account password"
         }
+      },
+      "reconfigure": {
+        "title": "Reconfigure i9 Schedule",
+        "description": "Update your i9 Sports login credentials",
+        "data": {
+          "username": "Email Address",
+          "password": "Password"
+        },
+        "data_description": {
+          "username": "Your i9 Sports account email (currently {username})",
+          "password": "Your i9 Sports account password"
+        }
       }
     },
     "error": {
@@ -21,7 +33,8 @@
       "unknown": "An unexpected error occurred. Please try again."
     },
     "abort": {
-      "already_configured": "This account is already configured."
+      "already_configured": "This account is already configured.",
+      "reconfigure_successful": "i9 Schedule credentials updated successfully. Integration is being reloaded."
     }
   },
   "options": {

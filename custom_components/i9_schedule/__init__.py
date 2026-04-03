@@ -86,6 +86,9 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
                 }
                 data[member_person_id]["teams"].append(team_data)
             
+            # Detect new children and trigger entity discovery
+            self._check_for_new_children(data)
+            
             return data
 
         except InvalidAuth as err:
@@ -94,6 +97,24 @@ class I9DataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(f"Network error connecting to i9 API: {err}") from err
         except Exception as err:
             raise UpdateFailed(f"Error fetching i9 schedule data: {err}") from err
+
+    def _check_for_new_children(self, new_data: dict) -> None:
+        """Check if new children were discovered and trigger entity addition."""
+        old_data = getattr(self, "_last_known_children", {})
+        new_child_ids = set(new_data.keys())
+        old_child_ids = set(old_data.keys())
+        
+        # Store current state
+        self._last_known_children = new_data
+        
+        # If new children found, signal to coordinator listeners
+        if new_child_ids != old_child_ids:
+            new_children = new_child_ids - old_child_ids
+            if new_children:
+                _LOGGER.info(
+                    "New children discovered: %s. Entities will be created on next update.",
+                    [new_data[cid]["child_name"] for cid in new_children],
+                )
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
