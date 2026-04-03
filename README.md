@@ -10,13 +10,12 @@ A Home Assistant custom integration for retrieving sports schedules from i9 Spor
 - **Smart pre-event polling**: Automatically increases update frequency before games to ensure you get the latest info
 - **Automation-friendly**: Exposes sensors, binary sensors, and services for creating automations
 - **Example automations**: Includes templates for game reminders, notifications, and status updates
-- **Custom Lovelace card**: Beautiful dashboard card to display next game at a glance (included)
 
 ## Installation
 
 ### Via HACS (Recommended)
 
-**Integration + Custom Card**
+**Integration**
 
 1. Open Home Assistant and go to **HACS**
 2. Click **Integrations** in the sidebar
@@ -28,11 +27,13 @@ A Home Assistant custom integration for retrieving sports schedules from i9 Spor
 8. Click **Install** → **Install**
 9. Restart Home Assistant (Settings → System → Restart)
 
-The integration is now installed! The custom Lovelace card will be installed as a separate frontend plugin:
+The integration is now installed! To display your games, you'll want the companion card:
 
-1. Go back to **HACS** → **Frontend**
-2. Repeat steps 3-8 for the same repository URL
-3. Select **Lovelace** as the category
+**Custom Lovelace Card**
+
+The custom card is now maintained in a separate repository:
+- Repository: `https://github.com/bendavis/i9-schedule-card`
+- See the [card repository](https://github.com/bendavis/i9-schedule-card) for installation instructions.
 
 ### Manual Installation
 
@@ -40,16 +41,7 @@ For a fully manual setup without HACS:
 
 1. Download this repository: `https://github.com/bendavis/i9-schedule-ha/archive/refs/heads/main.zip`
 2. Extract `custom_components/i9_schedule/` to `~/.homeassistant/custom_components/`
-3. Extract `custom_card/` to `~/.homeassistant/www/community/i9-schedule-card/`
-4. Add to `configuration.yaml`:
-   ```yaml
-   lovelace:
-     mode: yaml
-     resources:
-       - url: /local/community/i9-schedule-card/i9-schedule-card.js
-         type: module
-   ```
-5. Restart Home Assistant
+3. Restart Home Assistant
 
 ## Configuration
 
