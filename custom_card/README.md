@@ -149,13 +149,13 @@ The card works with i9_schedule services for advanced automations:
 alias: "Game reminder"
 trigger:
   - platform: numeric_state
-    entity_id: sensor.i9_child_1_minutes_until_next_game
+   entity_id: sensor.i9_child_1_minutes_until_next_game
     below: 60
     above: 55
 action:
   - service: notify.notify
     data:
-      message: "The next i9 game starts in about 1 hour!"
+    message: "The next i9 game starts in about 1 hour!"
 ```
 
 ## Advanced Configuration

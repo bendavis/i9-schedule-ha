@@ -226,15 +226,14 @@
       # Check if last game was within last 2 hours
       value_template: >
         {% set last_game_time = state_attr('sensor.i9_child_next_game_time', 'last_game_end') %}
-        True
   action:
     - service: notify.notify
       data:
         message: "How did the game go? Reply to share highlights or concerns!"
-        title: "Post-Game Feedback"
+        #    (e.g., "child_1", "child_2", or numeric ID depending on your account setup)
   mode: single
 
----
+        #    (e.g., "sensor.i9_child_1_next_game_time")
 
 # EXAMPLE 9: Weekly schedule summary
 # Monday morning preview of the week's games
@@ -316,7 +315,7 @@
 # USAGE NOTES:
 #
 # 1. Replace "child_name_or_id" with actual child name or ID from coordinator data
-#    (e.g., "child_1", "alex", or numeric ID depending on your account setup)
+#    (e.g., "child_1", "child_2", or numeric ID depending on your account setup)
 #
 # 2. Replace "sensor.i9_child_*" with your actual sensor entity IDs
 #    (e.g., "sensor.i9_child_1_next_game_time")
