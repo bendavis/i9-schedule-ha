@@ -1,10 +1,10 @@
 {
   "domain": "i9_schedule",
   "name": "i9 Schedule",
-  "codeowners": ["@yourusername"],
+  "codeowners": ["@bendavis"],
   "config_flow": true,
-  "documentation": "https://github.com/yourusername/i9-schedule-ha",
-  "issue_tracker": "https://github.com/yourusername/i9-schedule-ha/issues",
+  "documentation": "https://github.com/bendavis/i9-schedule-ha",
+  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues",
   "requirements": ["aiohttp>=3.8.0"],
   "version": "0.1.0",
   "integration_type": "hub",

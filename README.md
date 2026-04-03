@@ -124,7 +124,7 @@ See `examples/automations.yaml` for complete automation templates including:
 
 ## Support
 
-For issues, questions, or feature requests, please [open an issue on GitHub](https://github.com/yourusername/i9-schedule-ha/issues).
+For issues, questions, or feature requests, please [open an issue on GitHub](https://github.com/bendavis/i9-schedule-ha/issues).
 
 ## License
 
