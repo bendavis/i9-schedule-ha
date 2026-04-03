@@ -1,5 +1,7 @@
 {
   "name": "i9 Schedule",
   "documentation": "https://github.com/bendavis/i9-schedule-ha",
-  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues"
+  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues",
+  "homeassistant": "2023.1.0",
+  "render_readme": true
 }
