@@ -1,0 +1,337 @@
+# Example Automations for i9 Schedule Integration
+#
+# These are example automations that you can use with the i9 Schedule integration.
+# Copy the relevant sections to your Home Assistant automations.yaml file
+# and customize them for your needs.
+#
+# Automations are triggered by:
+# - Sensor state changes (game info updates)
+# - Time patterns (scheduled reminders)
+# - Custom time conditions
+#
+# For UI-based automation creation, use Home Assistant Settings > Automations > Create Automation
+
+---
+
+# EXAMPLE 1: Notify 1 hour before game
+# Sends a notification 1 hour before the child's next game with game details
+- alias: "i9 Schedule - 1 hour before game reminder"
+  description: "Send notification 1 hour before next game"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.i9_child_minutes_until_next_game
+    below: 60
+    above: 55  # Trigger when between 55-60 minutes (roughly 1 hour)
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.i9_child_minutes_until_next_game
+      above: 0
+  action:
+    - service: i9_schedule.get_next_game_details
+      data:
+        child_id: "child_name_or_id"
+      response_variable: game_info
+    - service: notify.notify
+      data:
+        message: |
+          🎮 {{ game_info.result[0].player }} has a game in 1 hour!
+          ⏰ Game time: {{ game_info.result[0].game_time }}
+          📍 Location: {{ game_info.result[0].location }}
+          👕 Jersey: {{ game_info.result[0].jersey_color }}
+          🏠 {{ game_info.result[0].home_away }} game
+          vs. {{ game_info.result[0].opponent }}
+          Arrive by: {{ game_info.result[0].arrive }}
+        title: "Game Reminder"
+  mode: single
+
+---
+
+# EXAMPLE 2: Daily game summary at 7 AM
+# Lists all games for each child today
+- alias: "i9 Schedule - Daily game summary"
+  description: "Send daily summary of all games at 7 AM"
+  trigger:
+    platform: time
+    at: "07:00:00"
+  action:
+    - service: i9_schedule.get_games_filtered
+      data:
+        child_id: "child_name_or_id"
+        start_date: "{{ today_iso }}"
+        end_date: "{{ today_iso }}"
+      response_variable: today_games
+    - service: notify.notify
+      data:
+        message: |
+          📋 Today's Games Summary
+          {% if today_games.result|length > 0 %}
+          {% for game in today_games.result %}
+          • {{ game.game_time }} - {{ game.opponent }}
+            📍 {{ game.location }}
+            👕 {{ game.jersey_color }}
+          {% endfor %}
+          {% else %}
+          No games scheduled today
+          {% endif %}
+        title: "Today's Schedule"
+  mode: single
+
+---
+
+# EXAMPLE 3: Alert when game is cancelled
+# Notifies when a game changes to cancelled status
+- alias: "i9 Schedule - Game cancelled alert"
+  description: "Alert when a game is cancelled"
+  trigger:
+    platform: template
+    value_template: "{{ state_attr('sensor.i9_child_next_game_time', 'cancelled') == True }}"
+  action:
+    - service: notify.notify
+      data:
+        message: "⚠️ GAME CANCELLED: {{ state_attr('sensor.i9_child_next_game_opponent', 'name') }} game has been cancelled"
+        title: "CANCELLED"
+  mode: single
+
+---
+
+# EXAMPLE 4: Notify when jersey color changes from TBD
+# Alerts when jersey color is confirmed (changed from "TBD")
+- alias: "i9 Schedule - Jersey color confirmed"
+  description: "Notify when jersey color is set from TBD"
+  trigger:
+    platform: state
+    entity_id: sensor.i9_child_next_game_jersey_color
+    from: "TBD"
+  condition:
+    - condition: template
+      value_template: "{{ trigger.to_state.state != 'TBD' }}"
+  action:
+    - service: notify.notify
+      data:
+        message: "👕 Jersey color confirmed for {{ state_attr('sensor.i9_child_next_game_opponent', 'name') }} game: {{ trigger.to_state.state }}"
+        title: "Jersey Color Updated"
+  mode: single
+
+---
+
+# EXAMPLE 5: Away game notification with driving directions
+# Special handling for away games - includes travel info
+- alias: "i9 Schedule - Away game alert with directions"
+  description: "Alert for away games with location details"
+  trigger:
+    platform: state
+    entity_id: sensor.i9_child_next_game_home_away
+    to: "Away"
+  action:
+    - service: i9_schedule.get_next_game_details
+      data:
+        child_id: "child_name_or_id"
+      response_variable: game_info
+    - service: notify.notify
+      data:
+        message: |
+          🚗 AWAY GAME - Plan Travel Time!
+          
+          📍 {{ game_info.result[0].location }}
+          {{ game_info.result[0].court_field }}
+          
+          ⏰ Arrive by: {{ game_info.result[0].arrive }}
+          🎮 Game time: {{ game_info.result[0].game_time }}
+          
+          Consider travel time when planning to leave!
+        title: "Away Game - {{ game_info.result[0].opponent }}"
+        data:
+          url: "google.maps://maps.google.com/?q={{ game_info.result[0].location }}"
+  mode: single
+
+---
+
+# EXAMPLE 6: Multi-child game coordination
+# When multiple kids have games at same venue
+- alias: "i9 Schedule - Multi-child same venue"
+  description: "Alert when multiple children have games at same location"
+  trigger:
+    - platform: state
+      entity_id: sensor.i9_child1_next_game_location
+    - platform: state
+      entity_id: sensor.i9_child2_next_game_location
+  action:
+    - service: i9_schedule.get_next_game_details
+      data:
+        child_id: "child1"
+      response_variable: child1_game
+    - service: i9_schedule.get_next_game_details
+      data:
+        child_id: "child2"
+      response_variable: child2_game
+    - service: notify.notify
+      data:
+        message: |
+          📍 SAME VENUE OPPORTUNITY!
+          
+          {{ child1_game.result[0].player }} vs {{ child1_game.result[0].opponent }}
+          ⏰ {{ child1_game.result[0].game_time }}
+          
+          AND
+          
+          {{ child2_game.result[0].player }} vs {{ child2_game.result[0].opponent }}
+          ⏰ {{ child2_game.result[0].game_time }}
+          
+          Both at: {{ child1_game.result[0].location }}
+        title: "Multiple Games - Same Location"
+      when:
+        - condition: template
+          value_template: "{{ child1_game.result[0].location == child2_game.result[0].location }}"
+  mode: single
+
+---
+
+# EXAMPLE 7: Evening reminder (2 hours before)
+# Less urgent reminder, useful for preparation
+- alias: "i9 Schedule - Evening game reminder"
+  description: "2 hour advance notice for evening games"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.i9_child_minutes_until_next_game
+    below: 130  # 2 hours + buffer
+    above: 120
+  action:
+    - service: notify.notify
+      data:
+        message: |
+          ⏰ HEADS UP - Game in 2 hours!
+          
+          Game: {{ states('sensor.i9_child_next_game_opponent') }}
+          Time: {{ states('sensor.i9_child_next_game_time') }}
+          Location: {{ states('sensor.i9_child_next_game_location') }}
+          Arrive: {{ states('sensor.i9_child_next_game_arrival_time') }}
+          Jersey: {{ states('sensor.i9_child_next_game_jersey_color') }}
+          
+          Start preparing!
+        title: "Game in 2 Hours"
+  mode: single
+
+---
+
+# EXAMPLE 8: Post-game feedback request
+# Send notification after game for feedback/review (if game just finished)
+- alias: "i9 Schedule - Post-game feedback"
+  description: "Request post-game feedback after game ends"
+  trigger:
+    platform: time_pattern
+    # Runs every 30 minutes
+    minutes: "*/30"
+  condition:
+    - condition: template
+      # Check if last game was within last 2 hours
+      value_template: >
+        {% set last_game_time = state_attr('sensor.i9_child_next_game_time', 'last_game_end') %}
+        True
+  action:
+    - service: notify.notify
+      data:
+        message: "How did the game go? Reply to share highlights or concerns!"
+        title: "Post-Game Feedback"
+  mode: single
+
+---
+
+# EXAMPLE 9: Weekly schedule summary
+# Monday morning preview of the week's games
+- alias: "i9 Schedule - Weekly preview"
+  description: "Send weekly game schedule every Monday at 8 AM"
+  trigger:
+    platform: time
+    at: "08:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().weekday() == 0 }}"  # Monday
+  action:
+    - service: i9_schedule.get_games_filtered
+      data:
+        child_id: "child_name_or_id"
+        start_date: "{{ today_iso }}"
+        end_date: "{{ (now() + timedelta(days=7)).strftime('%Y-%m-%d') }}"
+      response_variable: week_games
+    - service: notify.notify
+      data:
+        message: |
+          📅 This Week's Games
+          {% if week_games.result|length > 0 %}
+          {% for game in week_games.result %}
+          📌 {{ game.date }} at {{ game.game_time }}
+             {{ game.opponent }} - {{ game.home_away }} ({{ game.location }})
+             👕 {{ game.jersey_color }}
+          {% endfor %}
+          {% else %}
+          No games this week
+          {% endif %}
+        title: "Weekly Preview"
+  mode: single
+
+---
+
+# EXAMPLE 10: Custom automation - Notify with details when game today changes
+# Triggers whenever the "game today" sensor changes
+- alias: "i9 Schedule - Game today status change"
+  description: "Notify when game today status changes"
+  trigger:
+    platform: state
+    entity_id: binary_sensor.i9_child_game_today
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.i9_child_game_today
+              state: "on"
+          sequence:
+            - service: i9_schedule.get_next_game_details
+              data:
+                child_id: "child_name_or_id"
+              response_variable: game_info
+            - service: notify.notify
+              data:
+                message: |
+                  ✅ GAME TODAY!
+                  
+                  Opponent: {{ game_info.result[0].opponent }}
+                  Time: {{ game_info.result[0].game_time }}
+                  Location: {{ game_info.result[0].location }}
+                  Jersey: {{ game_info.result[0].jersey_color }}
+                  Arrive: {{ game_info.result[0].arrive }}
+                title: "Game Today!"
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.i9_child_game_today
+              state: "off"
+          sequence:
+            - service: notify.notify
+              data:
+                message: "No game scheduled for today"
+                title: "No Game Today"
+  mode: single
+
+---
+
+# USAGE NOTES:
+#
+# 1. Replace "child_name_or_id" with actual child name or ID from coordinator data
+#    (e.g., "child_1", "alex", or numeric ID depending on your account setup)
+#
+# 2. Replace "sensor.i9_child_*" with your actual sensor entity IDs
+#    (e.g., "sensor.i9_child_1_next_game_time")
+#
+# 3. Use "notify.notify" or replace with your actual notification service
+#    (e.g., "notify.email", "notify.mobile_app_phone")
+#
+# 4. Time values and thresholds can be adjusted to your preferences
+#
+# 5. For UI-based automations, the services are available in automations UI
+#    under "Call a service" action
+#
+# 6. Test automations in dry-run mode first to verify they work correctly
+#
+# 7. All times are in 24-hour format unless Home Assistant config specifies otherwise
+#
+# For more info on Home Assistant automations:
+# https://www.home-assistant.io/docs/automation/

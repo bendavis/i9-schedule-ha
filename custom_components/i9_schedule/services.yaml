@@ -1,0 +1,30 @@
+get_next_game_details:
+  description: "Get details about the next upcoming game for a child"
+  fields:
+    child_id:
+      description: "The child ID or name"
+      selector:
+        text:
+
+get_games_filtered:
+  description: "Get all games within a date range for a child"
+  fields:
+    child_id:
+      description: "The child ID or name"
+      selector:
+        text:
+    start_date:
+      description: "Start date (YYYY-MM-DD), defaults to today"
+      selector:
+        text:
+    end_date:
+      description: "End date (YYYY-MM-DD), defaults to 30 days from start"
+      selector:
+        text:
+    team_id:
+      description: "Specific team ID (optional, if child is on multiple teams)"
+      selector:
+        text:
+
+force_update:
+  description: "Manually trigger an update from i9 Sports API"

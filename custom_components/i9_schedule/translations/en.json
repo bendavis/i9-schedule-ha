@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "i9 Schedule Setup",
+        "description": "Enter your i9 Sports login credentials",
+        "data": {
+          "username": "Email Address",
+          "password": "Password"
+        },
+        "data_description": {
+          "username": "Your i9 Sports account email",
+          "password": "Your i9 Sports account password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username or password. Please check your credentials.",
+      "cannot_connect": "Failed to connect to i9 Sports. Please check your internet connection.",
+      "no_teams": "No teams found for this account. Please ensure children are enrolled in i9 Sports.",
+      "unknown": "An unexpected error occurred. Please try again."
+    },
+    "abort": {
+      "already_configured": "This account is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "i9 Schedule Options",
+        "description": "Configure update frequency",
+        "data": {
+          "scan_interval": "Update interval (seconds, 300-86400)"
+        },
+        "data_description": {
+          "scan_interval": "How often to check i9 Sports for schedule updates. Minimum 5 minutes (300 seconds), maximum 24 hours (86400 seconds). Default is 30 minutes (1800 seconds)."
+        }
+      }
+    }
+  }
+}
