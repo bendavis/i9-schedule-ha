@@ -6,12 +6,13 @@ from typing import Any, Optional
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
-from homeassistant.const import UnitOfTime
-from homeassistant.core import HomeAssistant, callback as ha_callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.const import UnitOfTime
+from homeassistant.core import HomeAssistant
+from homeassistant.core import callback as ha_callback
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .i9_client import I9API
@@ -26,75 +27,57 @@ async def async_setup_entry(
 ) -> None:
     """Set up sensors from config entry."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
-    
+
     # Track which child/team combinations we've already created entities for
     created_entities = set()
-    
+
     async def async_discover_entities():
         """Discover and add entities for all children."""
         entities = []
-        
+
         if coordinator.data:
             for child_id, child_data in coordinator.data.items():
                 child_name = child_data["child_name"]
-                
+
                 for team_data in child_data["teams"]:
                     team_id = team_data["team_id"]
                     team_name = team_data["team_name"]
-                    
+
                     # Create unique key for this child/team combo
                     entity_key = (child_id, team_id)
-                    
+
                     # Only create entities if this is a new child/team combo
                     if entity_key not in created_entities:
                         created_entities.add(entity_key)
-                        
+
                         # Add sensor entities
-                        entities.extend([
-                            I9NextGameTimeSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameLocationSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameOpponentSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameJerseyColorSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameArrivalTimeSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameHomeAwaySensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9MinutesUntilGameSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9NextGameTeamNameSensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9GameTodayBinarySensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                            I9GameThisWeekBinarySensor(
-                                coordinator, child_id, team_id, child_name, team_name
-                            ),
-                        ])
-        
+                        entities.extend(
+                            [
+                                I9NextGameTimeSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameLocationSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameOpponentSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameJerseyColorSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameArrivalTimeSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameHomeAwaySensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9MinutesUntilGameSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9NextGameTeamNameSensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9GameTodayBinarySensor(coordinator, child_id, team_id, child_name, team_name),
+                                I9GameThisWeekBinarySensor(coordinator, child_id, team_id, child_name, team_name),
+                            ]
+                        )
+
         if entities:
             async_add_entities(entities)
-    
+
     # Initial discovery
     await async_discover_entities()
-    
+
     # Set up listener for coordinator updates to discover new children
     @ha_callback
     def async_discover_new_children():
         """Discover new children on coordinator update."""
         hass.async_create_task(async_discover_entities())
-    
+
     coordinator.async_add_listener(async_discover_new_children)
 
 
@@ -128,7 +111,7 @@ class I9BaseSensor(CoordinatorEntity, SensorEntity):
         """Get team data from coordinator."""
         if not self.coordinator.data or self.child_id not in self.coordinator.data:
             return None
-        
+
         child_data = self.coordinator.data[self.child_id]
         for team_data in child_data.get("teams", []):
             if team_data["team_id"] == self.team_id:
@@ -312,22 +295,22 @@ class I9GameTodayBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Return True if child has a game today."""
         if not self.coordinator.data or self.child_id not in self.coordinator.data:
             return False
-        
+
         child_data = self.coordinator.data[self.child_id]
         today = datetime.now().date()
-        
+
         for team_data in child_data.get("teams", []):
             if team_data["team_id"] != self.team_id:
                 continue
-            
+
             for game in team_data.get("schedule", []):
                 if game.get("cancelled"):
                     continue
-                
+
                 game_dt = I9API._parse_datetime(game.get("gameDate"))
                 if game_dt and game_dt.date() == today:
                     return True
-        
+
         return False
 
 
@@ -365,23 +348,21 @@ class I9GameThisWeekBinarySensor(CoordinatorEntity, BinarySensorEntity):
         """Return True if child has a game this week."""
         if not self.coordinator.data or self.child_id not in self.coordinator.data:
             return False
-        
+
         child_data = self.coordinator.data[self.child_id]
         now = datetime.now()
         week_end = now + timedelta(days=7)
-        
+
         for team_data in child_data.get("teams", []):
             if team_data["team_id"] != self.team_id:
                 continue
-            
+
             for game in team_data.get("schedule", []):
                 if game.get("cancelled"):
                     continue
-                
-                game_dt = I9API._parse_datetime(
-                    game.get("startTime") or game.get("gameDate")
-                )
+
+                game_dt = I9API._parse_datetime(game.get("startTime") or game.get("gameDate"))
                 if game_dt and now <= game_dt <= week_end:
                     return True
-        
+
         return False
