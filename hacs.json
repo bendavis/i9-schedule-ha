@@ -1,9 +1,5 @@
 {
   "name": "i9 Schedule",
   "documentation": "https://github.com/bendavis/i9-schedule-ha",
-  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues",
-  "hacs": {
-    "category": "integration",
-    "topics": ["i9-sports", "schedule", "automation", "sports"]
-  }
+  "issue_tracker": "https://github.com/bendavis/i9-schedule-ha/issues"
 }
