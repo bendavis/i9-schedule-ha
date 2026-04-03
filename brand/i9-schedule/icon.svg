@@ -2,40 +2,30 @@
   <!-- Background -->
   <rect width="256" height="256" fill="#1a1a2e" rx="12"/>
   
-  <!-- Jersey shape -->
-  <g id="jersey">
-    <!-- Main body -->
-    <path d="M 80 60 L 60 90 L 60 200 Q 60 220 80 220 L 176 220 Q 196 220 196 200 L 196 90 L 176 60 Z" 
-          fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+  <!-- Football -->
+  <g id="football" transform="translate(128, 128)">
+    <!-- Main football body (brown leather) -->
+    <ellipse cx="0" cy="0" rx="70" ry="45" fill="#8b6f47" stroke="#5c4a2f" stroke-width="2"/>
     
-    <!-- Sleeve left -->
-    <ellipse cx="55" cy="95" rx="18" ry="35" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+    <!-- Laces (white stitching down center) -->
+    <line x1="-60" y1="0" x2="60" y2="0" stroke="#f5f5f5" stroke-width="2"/>
     
-    <!-- Sleeve right -->
-    <ellipse cx="201" cy="95" rx="18" ry="35" fill="#2563eb" stroke="#1e40af" stroke-width="2"/>
+    <!-- Lace knots -->
+    <circle cx="-45" cy="0" r="2" fill="#f5f5f5"/>
+    <circle cx="-25" cy="0" r="2" fill="#f5f5f5"/>
+    <circle cx="0" cy="0" r="2" fill="#f5f5f5"/>
+    <circle cx="25" cy="0" r="2" fill="#f5f5f5"/>
+    <circle cx="45" cy="0" r="2" fill="#f5f5f5"/>
     
-    <!-- Neckline -->
-    <path d="M 100 60 Q 128 45 156 60" fill="none" stroke="#1e40af" stroke-width="2"/>
-    <circle cx="128" cy="62" r="8" fill="#fbbf24"/>
-    
-    <!-- Jersey number stripes (vertical accent) -->
-    <rect x="118" y="100" width="6" height="80" fill="#fbbf24" opacity="0.8"/>
-    <rect x="132" y="100" width="6" height="80" fill="#fbbf24" opacity="0.8"/>
-    
-    <!-- Center highlight -->
-    <rect x="120" y="105" width="16" height="70" fill="#fbbf24" opacity="0.6" rx="2"/>
-    
-    <!-- Collar trim -->
-    <path d="M 100 60 Q 100 75 128 78 Q 156 75 156 60" fill="#fbbf24" opacity="0.7"/>
+    <!-- Shadow underneath -->
+    <ellipse cx="0" cy="52" rx="65" ry="10" fill="#000000" opacity="0.15"/>
   </g>
   
-  <!-- Calendar accent on jersey -->
-  <g id="calendar-accent" transform="translate(128, 160)">
-    <rect x="-20" y="-15" width="40" height="35" fill="#10b981" opacity="0.9" rx="3"/>
-    <line x1="-18" y1="-8" x2="18" y2="-8" stroke="#ffffff" stroke-width="1.5"/>
-    <text x="0" y="12" text-anchor="middle" fill="#ffffff" font-size="16" font-weight="bold" font-family="Arial">S</text>
+  <!-- Schedule icon -->
+  <g id="schedule" transform="translate(40, 40)">
+    <rect width="35" height="35" fill="#10b981" rx="4" opacity="0.85"/>
+    <line x1="5" y1="12" x2="30" y2="12" stroke="#ffffff" stroke-width="1.5"/>
+    <line x1="5" y1="19" x2="30" y2="19" stroke="#ffffff" stroke-width="1"/>
+    <line x1="5" y1="25" x2="30" y2="25" stroke="#ffffff" stroke-width="1"/>
   </g>
-  
-  <!-- Accent shimmer -->
-  <ellipse cx="100" cy="120" rx="35" ry="50" fill="#ffffff" opacity="0.05"/>
 </svg>
