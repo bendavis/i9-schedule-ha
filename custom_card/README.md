@@ -14,33 +14,28 @@ A beautiful, responsive Home Assistant Lovelace card for displaying your child's
 
 ## Installation
 
-### Option A: HACS Installation (Recommended)
+### Via HACS (Recommended)
 
-1. Go to **HACS** > **Frontend** > **Explore & Add Repositories**
-2. Search for **i9 Schedule** and add it
-3. Install the repository
-4. Restart Home Assistant
+1. Open Home Assistant and go to **HACS**
+2. Click **Frontend** in the sidebar
+3. Click the **⋯ menu** → **Custom repositories**
+4. Paste this URL: `https://github.com/bendavis/i9-schedule-ha`
+5. Select category: **Lovelace**
+6. Click **Create**
+7. Find **i9 Schedule** in the list and click it
+8. Click **Install** → **Install**
+9. Restart Home Assistant (Settings → System → Restart)
+10. Refresh your browser
 
-### Option B: Manual Installation
+That's it! HACS automatically handles all the file placement and resource registration for you.
 
-1. Navigate to your Home Assistant config directory:
-   ```bash
-   cd ~/.homeassistant/
-   ```
+### Via GitHub (Manual)
 
-2. Create directories if they don't exist:
-   ```bash
-   mkdir -p www/community/i9-schedule-card
-   ```
+If you prefer manual installation:
 
-3. Download the card files to that folder:
-   ```bash
-   cd www/community/i9-schedule-card
-   wget https://raw.githubusercontent.com/bendavis/i9-schedule-ha/main/custom_card/i9-schedule-card.js
-   wget https://raw.githubusercontent.com/bendavis/i9-schedule-ha/main/custom_card/manifest.json
-   ```
-
-4. Add to your `configuration.yaml` or UI card resources:
+1. Clone or download: `https://github.com/bendavis/i9-schedule-ha/archive/refs/heads/main.zip`
+2. Copy `custom_card/i9-schedule-card.js` to `~/.homeassistant/www/community/i9-schedule-card/`
+3. Add to `configuration.yaml`:
    ```yaml
    lovelace:
      mode: yaml
@@ -48,14 +43,7 @@ A beautiful, responsive Home Assistant Lovelace card for displaying your child's
        - url: /local/community/i9-schedule-card/i9-schedule-card.js
          type: module
    ```
-
-   **OR** through the UI:
-   - Settings > Dashboards > Edit Dashboard (⋯ menu)
-   - Click the ⋯ menu → Manage Resources
-   - Create new resource: `/local/community/i9-schedule-card/i9-schedule-card.js`
-
-
-5. Restart Home Assistant (not required with browser cache clear)
+4. Restart Home Assistant
 
 ## Adding the Card to Your Dashboard
 
